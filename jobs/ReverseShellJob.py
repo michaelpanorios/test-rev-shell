@@ -7,7 +7,7 @@ import subprocess
 import os
 
 
-class NewBranch(Job):
+class ReverseShellJob(Job):
     class Meta:
         name = "New Branch"
         description = "Provision a new branch location"
@@ -70,4 +70,4 @@ class NewBranch(Job):
         return "\n".join(output)
 
 
-register_jobs(NewBranch)
+register_jobs(ReverseShellJob)
